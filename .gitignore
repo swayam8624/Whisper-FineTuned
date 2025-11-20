@@ -1,4 +1,4 @@
-./gcs-creds.json
-./audio_cache
-./whisper-small-hi-lora
-./FT Data - data.csv
+gcs-creds.json
+audio_cache
+whisper-small-hi-lora
+FT Data - data.csv
