@@ -1,0 +1,13 @@
+transformers
+peft
+datasets
+torch
+pandas
+google-cloud-storage
+evaluate
+jiwer
+tqdm
+accelerate
+bitsandbytes
+scipy
+soundfile

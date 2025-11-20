@@ -1,0 +1,22 @@
+Values are raw WER ratios (e.g., 0.30 = 30%)		
+Model	Hindi	
+Whisper Small (Pretrained)	0.83	
+FT Whisper Small (yours)	0.6811749780423538	
+		
+
+
+
+Data Processing Pipeline for Whisper Hindi ASR FineTuning
+
+The data processing began with downloading 103 audiotranscription pairs from Google Cloud Storage to a local cache directory using the gcloud CLI. Each audio file was loaded using HuggingFace's `Audio` loader which automatically resampled to 16 kHz, while transcription JSONs were parsed to extract Hindi text. The preprocessing pipeline then applied Unicode normalization (NFC) to handle Devanagari script variations, followed by Whisper's feature extractor to convert raw audio waveforms into 80channel logMel spectrograms. Text transcriptions were normalized (lowercased, whitespace cleaned) and tokenized into token IDs using Whisper's Hindi tokenizer. To combat overfitting on the small dataset, aggressive data augmentation was applied to 70% of samples including speed perturbation (0.851.15x), additive Gaussian noise, and volume scaling (0.71.3x).
+
+The processed dataset was filtered to remove samples with empty transcriptions or durations <1 second, then split 85/15 into training and validation sets. During training, a custom data collator dynamically padded audio features and text labels to uniform lengths within each batch, masked padding tokens with 100 for loss computation, and handled BOS token alignment. All features were stored as PyTorch tensors with `input_features` (audio spectrograms) and `labels` (tokenized text) ready for the Seq2SeqTrainer.
+
+Processing Stage  Input  Output  Key Operations 
+
+ Data Collection  CSV + GCS URLs  103 audio files + JSONs  gcloud CLI download, URL patching 
+ Audio Processing  WAV files  80channel logMel (16 kHz)  Resampling, spectrogram extraction 
+ Text Processing  Hindi JSON transcripts  Token IDs  Unicode NFC normalization, tokenization 
+ Augmentation  Original audio  Augmented samples (70%)  Speed (±15%), noise, volume (±30%) 
+ Train/Val Split  103 samples  87 train / 16 val  Stratified 85/15 split 
+ Batching  Variablelength samples  Padded tensors  Dynamic padding, 100 masking 

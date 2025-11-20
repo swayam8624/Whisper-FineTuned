@@ -1,0 +1,8 @@
+Processing Stage  Input  Output  Key Operations 
+
+ Data Collection  CSV + GCS URLs  103 audio files + JSONs  gcloud CLI download, URL patching 
+ Audio Processing  WAV files  80channel logMel (16 kHz)  Resampling, spectrogram extraction 
+ Text Processing  Hindi JSON transcripts  Token IDs  Unicode NFC normalization, tokenization 
+ Augmentation  Original audio  Augmented samples (70%)  Speed (±15%), noise, volume (±30%) 
+ Train/Val Split  103 samples  87 train / 16 val  Stratified 85/15 split 
+ Batching  Variablelength samples  Padded tensors  Dynamic padding, 100 masking 
